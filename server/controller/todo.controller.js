@@ -1,29 +1,32 @@
 import express from 'express';
 import Todo from '../database/models/todo.model.js';
+import passport from 'passport';
+
 
 const todoController = express.Router();
+
 
 /**
  * GET/
  * retrieve and display all Todo's in the Todo Model
  */
-todoController.get('/', (req, res) => {
+
+todoController.get('/' , passport.authenticate('jwt', {session: false}),(req, res) => {
   Todo.find({}, (error, result) => {
     if (error) {
       res.status(400).send(error);
     } else {
       res.status(200).json(result);
     }
-  })
+  });
 });
 
 /**
  * POST
  * Add a new Todo item to your database
  */
-todoController.post('/add-todo', (req, res) => {
+todoController.post('/add-todo', passport.authenticate(`jwt`, {session: false}), (req, res) => {
   const { userId, todoDetails, isCompleted, createdOn } = req.body;
-
   const todoData = {
     userId,
     todoDetails,
@@ -41,9 +44,9 @@ todoController.post('/add-todo', (req, res) => {
     });
 });
 
-todoController.patch(`/:id`, (req, res) => {
+todoController.patch(`/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
     try {
-      Todo.findOne({_id: req.params.id}).then(async (todo) => {
+      Todo.findOne({_id: req.params._id}).then(async (todo) => {
         todo.isCompleted = req.body.isCompleted;
         await todo.save().then((result) => {
           res.status(200).send(result);
@@ -52,12 +55,12 @@ todoController.patch(`/:id`, (req, res) => {
         })
       })
     } catch {
-      res.status(400).send('error');
+      res.status(500).send('server error');
     }
 })
 
 // get a todo item by its id
-todoController.get('/:id', (req, res) => {
+todoController.get('/todo/:id', passport.authenticate('jwt', {session: false}),(req, res) => {
   Todo.findById(req.params.id, (error, result) => {
     if(error) {
       res.status(400).send(error);
@@ -72,15 +75,31 @@ todoController.get('/:id', (req, res) => {
   })
 });
 
-todoController.delete(`/:id`, (req, res) => {
+todoController.delete(`/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
   try {
   Todo.remove({_id: req.params.id}).then(() => {
     res.status(200).send(`deleted successfully`);
   });
   } catch {
-    res.status(400).send('error');
+    res.status(500).send('server error');
   }
 
 })
+
+
+// helper function to get token
+
+const getToken = (headers) => {
+  if(headers && headers.authorization) {
+    const parted = headers.authorization.split(' ');
+    if(parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+}
 
 export default todoController;
