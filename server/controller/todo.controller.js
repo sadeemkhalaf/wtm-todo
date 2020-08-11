@@ -1,6 +1,7 @@
 import express from 'express';
 import Todo from '../database/models/todo.model.js';
 import passport from 'passport';
+import jsonwebtoken from 'jsonwebtoken';
 
 
 const todoController = express.Router();
@@ -11,13 +12,14 @@ const todoController = express.Router();
  * retrieve and display all Todo's in the Todo Model
  */
 
-todoController.get('/' , passport.authenticate('jwt', {session: false}),(req, res) => {
-  Todo.find({}, (error, result) => {
+todoController.get('/all' , passport.authenticate('jwt', {session: false}),(req, res) => {
+  const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
+  Todo.find({userId: decoded._id}, (error, result) => {
     if (error) {
       res.status(400).send(error);
     } else {
       res.status(200).json(result);
-    }
+    } 
   });
 });
 
@@ -26,7 +28,9 @@ todoController.get('/' , passport.authenticate('jwt', {session: false}),(req, re
  * Add a new Todo item to your database
  */
 todoController.post('/add-todo', passport.authenticate(`jwt`, {session: false}), (req, res) => {
-  const { userId, todoDetails, isCompleted, createdOn } = req.body;
+  const { todoDetails, isCompleted, createdOn } = req.body;
+  const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
+  const userId = decoded._id;
   const todoData = {
     userId,
     todoDetails,
@@ -46,7 +50,9 @@ todoController.post('/add-todo', passport.authenticate(`jwt`, {session: false}),
 
 todoController.patch(`/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
     try {
-      Todo.findOne({_id: req.params._id}).then(async (todo) => {
+      const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
+      const userId = decoded._id;
+      Todo.findOne({_id: req.params.id, userId: userId}).then(async (todo) => {
         todo.isCompleted = req.body.isCompleted;
         await todo.save().then((result) => {
           res.status(200).send(result);
@@ -85,21 +91,5 @@ todoController.delete(`/todo/:id`, passport.authenticate(`jwt`, {session: false}
   }
 
 })
-
-
-// helper function to get token
-
-const getToken = (headers) => {
-  if(headers && headers.authorization) {
-    const parted = headers.authorization.split(' ');
-    if(parted.length === 2) {
-      return parted[1];
-    } else {
-      return null;
-    }
-  } else {
-    return null;
-  }
-}
 
 export default todoController;
