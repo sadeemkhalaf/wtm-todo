@@ -7,20 +7,20 @@ const GetAllTodos = () => {
     return axios.get(API_URL + "all", { headers: authHeader() });
 };
 
-const AddTodo = () => {
-    return axios.post(API_URL + `/add-todo`,{} ,{ headers: authHeader() });
+const AddTodo = (todoObject) => {
+    return axios.post(API_URL + `add-todo`,todoObject ,{ headers: authHeader() });
 };
 
-const GetTodo = () => {
-    return axios.post(API_URL + `/todo/${todoID}`,{} ,{ headers: authHeader() });
+const GetTodo = (todoID) => {
+    return axios.post(API_URL + `todo/${todoID}`,{} ,{ headers: authHeader() });
 };
 
 const UpdateTodo = (todoID) => {
-    return axios.get(API_URL + `/todo/${todoID}`, { headers: authHeader() });
+    return axios.get(API_URL + `todo/${todoID}`, { headers: authHeader() });
 };
 
 const DeleteTodo = (todoID) => {
-    return axios.get(API_URL + `/todo/${todoID}`, { headers: authHeader() });
+    return axios.get(API_URL + `todo/${todoID}`, { headers: authHeader() });
 };
 
 
