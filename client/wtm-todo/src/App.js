@@ -1,24 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
+// import default style
+import 'rsuite/dist/styles/rsuite-default.css'
+
+// import login page
+import { LoginPage } from './components/LoginPage/LoginPage.js';
+import { RegisterPage } from './components/RegisterPage/RegisterPage';
+import { HomePage } from './components/HomePage/HomePage';
+
+const Login = () => (
+  <LoginPage />
+); 
+
+const Register = () => (
+  <RegisterPage />
+); 
+
+const Home = () => (
+  <HomePage />
+); 
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Route path="/login" component={Login}></Route>
+        <Route path="/register" component={Register}></Route>
+        <Route path="/home" component={Home}></Route>
+      </Router>
     </div>
   );
 }

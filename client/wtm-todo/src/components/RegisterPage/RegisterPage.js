@@ -4,33 +4,41 @@ import AuthService from '../../service/auth.service.js';
 import { Button, Form, FormGroup, FormControl, ControlLabel, Schema } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css'
-import './LoginPage.css';
+import './RegisterPage.css';
 
 // from validation
 const { StringType } = Schema.Types;
 
 const model = Schema.Model({
+    name: StringType()
+        .isRequired('This field is required.'),
     email: StringType()
         .isEmail('Please enter a valid email address.')
         .isRequired('This field is required.'),
     password: StringType().isRequired('This field is required.')
 });
 
-export class LoginPage extends Component {
+export class RegisterPage extends Component {
 
     constructor(props) {
         super(props)
+        this.onChangeName = this.onChangeName.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
+            name: '',
             email: '',
             password: ''
         }
     }
 
     // onChange email and password
+    onChangeName(value) {
+        this.setState({ name: value })
+    }
+
     onChangeEmail(value) {
         this.setState({ email: value })
     }
@@ -41,12 +49,13 @@ export class LoginPage extends Component {
 
     onSubmit(e) {
         const userObject = {
+            name: this.state.name,
             email: this.state.email,
             password: this.state.password
         };
 
-        AuthService.Login(userObject);
-        this.setState({ email: '', password: '' })
+        AuthService.Register(userObject);
+        this.setState({ name: '', email: '', password: '' })
     }
 
     render() {
@@ -54,6 +63,11 @@ export class LoginPage extends Component {
             <div className="App">
                 <header className="App-header">
                     <Form layout="horizontal" onSubmit={this.onSubmit} model={model}>
+                        <FormGroup>
+                            <ControlLabel srOnly>name</ControlLabel>
+                            <FormControl type="text" placeholder="name" name="name" value={this.state.name} onChange={this.onChangeName} />
+                        </FormGroup>
+
                         <FormGroup>
                             <ControlLabel srOnly>email</ControlLabel>
                             <FormControl type="email" placeholder="email" name="email" value={this.state.email} onChange={this.onChangeEmail} />
@@ -64,7 +78,7 @@ export class LoginPage extends Component {
                             <FormControl placeholder="Password" name="password" type="password" value={this.state.password} onChange={this.onChangePassword} />
                         </FormGroup>
 
-                        <Button type="submit">Login</Button>
+                        <Button type="submit">Register</Button>
                     </Form>
                 </header>
             </div>
