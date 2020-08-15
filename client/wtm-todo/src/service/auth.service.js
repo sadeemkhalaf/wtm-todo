@@ -3,7 +3,7 @@ import authHeader from './auth.header';
 
 const API_URL = "http://localhost:8080/";
 
-const Register = (name, email, password) => {
+const Register = ({name, email, password}) => {
   return axios.post(API_URL + "signup", {
     name,
     email,
