@@ -24,7 +24,7 @@ userController.post('/login', (req, res) => {
     } else {
       comparePassword(req.body.password, user.password, (error, isMatch) => {
         if (isMatch && !error) {
-          const token = jsonwebtoke.sign(user.toJSON(), 'process.env.SECRET', { expiresIn: 604800 }); // one week
+          const token = jsonwebtoke.sign(user.toJSON(), process.env.SECRET, { expiresIn: 604800 }); // one week
           res.json({ success: true, token: `JWT ${token}` });
         } else {
           res.status(401).send({ success: false, msg: 'Authentication failed, wrong password' });
