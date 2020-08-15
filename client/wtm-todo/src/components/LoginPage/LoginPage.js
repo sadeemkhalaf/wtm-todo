@@ -4,7 +4,7 @@ import AuthCheck, { authenticationService } from '../../service/authCheck.servic
 
 import { Redirect } from 'react-router-dom';
 // rsuite components
-import { Button, Form, FormGroup, FormControl, ControlLabel, Schema } from 'rsuite';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Schema, Divider } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css'
 import './LoginPage.css';
@@ -77,13 +77,6 @@ export class LoginPage extends Component {
         }
     }
 
-    CheckAuth() {
-        if (this.state.loggedIn)
-        {
-            return <Redirect push to={'/Home'} />;
-        }
-      }
-
     RedirectTo () {
         return this.state.loggedIn ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
       }
@@ -105,11 +98,13 @@ export class LoginPage extends Component {
                             <FormControl placeholder="Password" name="password" type="password" value={this.state.password} onChange={this.onChangePassword} />
                         </FormGroup>
 
+                        <div>
                         <Button type="submit">Login</Button>
-                        
+                            <Divider vertical />
+                            <a href="/register">Register</a>
+                        </div>        
                     </Form>
                 </header>
-                {this.redirect()}
             </div>
         );
     }

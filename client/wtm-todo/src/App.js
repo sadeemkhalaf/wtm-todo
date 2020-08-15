@@ -8,6 +8,7 @@ import { LoginPage } from './components/LoginPage/LoginPage.js';
 import { RegisterPage } from './components/RegisterPage/RegisterPage';
 import { HomePage } from './components/HomePage/HomePage';
 
+
 const Login = () => (
   <LoginPage />
 );
@@ -21,7 +22,7 @@ const Home = () => (
 );
 
 const RedirectTo = () => {
-  return authenticationService.loginStatusValue ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
+  return authenticationService.loginStatusValue ? <Redirect push to={'/home'}/> : null
 }
 
 function App() {

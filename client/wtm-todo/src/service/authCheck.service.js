@@ -1,7 +1,7 @@
 import UserService from './auth.service';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
-export const $isLoggedIn = new ReplaySubject(1);
+export const $isLoggedIn = new BehaviorSubject();
 
 export const authenticationService = {
     isLoggedIn: $isLoggedIn.asObservable(),
@@ -11,7 +11,6 @@ export const authenticationService = {
 class AuthCheck {
 
     constructor() {
-        this.auth = false;
         this.checkLogin();
     }
 
@@ -19,21 +18,20 @@ class AuthCheck {
         const token = await localStorage.getItem('user');
         if (token) {
             UserService.Auth().then((data) => {
-                this.auth = true;
+                console.log(true);
                 $isLoggedIn.next(true);
             }, error => {
-                this.auth = false;
                 $isLoggedIn.next(false);
+                console.log(false);
             })
         } else {
-            this.auth = false;
             $isLoggedIn.next(false);
         }
     }
 
     logout(cb) {
-        localStorage.removeItem('user')
-        this.auth = false;
+        localStorage.removeItem('user');
+        this.$isLoggedIn.next(false);
         cb();
     }
 
