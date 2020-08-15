@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AuthService from '../../service/auth.service.js';
 // rsuite components
-import { Button, Form, FormGroup, FormControl, ControlLabel, Schema } from 'rsuite';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Schema, Divider } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css'
 import './RegisterPage.css';
@@ -53,7 +53,6 @@ export class RegisterPage extends Component {
             email: this.state.email,
             password: this.state.password
         };
-
         AuthService.Register(userObject);
         this.setState({ name: '', email: '', password: '' })
     }
@@ -79,7 +78,11 @@ export class RegisterPage extends Component {
                             <FormControl placeholder="Password" name="password" type="password" value={this.state.password} onChange={this.onChangePassword} />
                         </FormGroup>
 
-                        <Button type="submit">Register</Button>
+                        <div>
+                            <Button type="submit" href="/login">Register</Button>
+                            <Divider vertical />
+                            <a href="/login">Login</a>
+                        </div>
                     </Form>
                 </header>
             </div>
