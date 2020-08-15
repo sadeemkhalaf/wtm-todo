@@ -4,7 +4,7 @@ import AuthCheck, { authenticationService } from '../../service/authCheck.servic
 
 import { Redirect } from 'react-router-dom';
 // rsuite components
-import { Button, Form, FormGroup, FormControl, ControlLabel, Schema, Divider } from 'rsuite';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Schema } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css'
 import './LoginPage.css';
@@ -104,11 +104,8 @@ export class LoginPage extends Component {
                             <ControlLabel srOnly>Password</ControlLabel>
                             <FormControl placeholder="Password" name="password" type="password" value={this.state.password} onChange={this.onChangePassword} />
                         </FormGroup>
-                        <div>
-                            <Button type="submit">Login</Button>
-                            <Divider vertical />
-                            <a href="/register">Register</a>
-                        </div>
+
+                        <Button type="submit">Login</Button>
                         
                     </Form>
                 </header>

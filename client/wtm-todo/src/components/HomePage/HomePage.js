@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TodosService from '../../service/todo.service';
 import AuthCheck, { authenticationService } from '../../service/authCheck.service';
-import { Redirect } from 'react-router-dom';
+
 // rsuite components
 import { Row, Col, Tag, Input, Form, IconButton, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
 // import default style
@@ -108,14 +108,9 @@ export class HomePage extends Component {
         );
     }
 
-    RedirectTo = () => {
-        return authenticationService.loginStatusValue ? <Redirect push to={'/home'}/> :  <Redirect push to={'/login'}/>
-      }
-
     render() {
         return (
             <div>
-                {this.RedirectTo()}
                 <Navbar>
                     <Navbar.Header>
                         <span className="navbar-brand">TODOs</span>

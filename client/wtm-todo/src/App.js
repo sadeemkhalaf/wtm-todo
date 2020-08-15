@@ -21,7 +21,7 @@ const Home = () => (
 );
 
 const RedirectTo = () => {
-  return authenticationService.loginStatusValue ? <Redirect push to={'/home'}/> : null
+  return authenticationService.loginStatusValue ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
 }
 
 function App() {
