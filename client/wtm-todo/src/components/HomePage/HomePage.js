@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import TodosService from '../../service/todo.service';
-import AuthService from '../../service/auth.service';
+import AuthCheck, { authenticationService } from '../../service/authCheck.service';
 
 // rsuite components
-import { Tag, Input, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
+import { Row, Col, Tag, Input, Form, IconButton, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css';
 import './HomePage.css';
 
 export class HomePage extends Component {
+    _isMounted = false;
+    subscriptions;
 
     constructor(props) {
         super(props);
@@ -25,50 +27,69 @@ export class HomePage extends Component {
             completedTodos: [],
             title: '',
             todoDetails: '',
-            isCompleted: false
-
+            isCompleted: false,
+            loggedIn: authenticationService.loginStatusValue
         }
     }
 
     componentDidMount() {
+        this._isMounted = true;
+        this.subscriptions = authenticationService.isLoggedIn.subscribe((value) => this.setState({ loggedIn: value }));
         this.getTodos();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.subscriptions.unsubscribe();
     }
 
     // input event
     onChangeDetails(value) {
         this.setState({ todoDetails: value })
     }
+    
     onChangeCompleted(value) {
         this.setState({ isCompleted: value })
     }
 
     async getTodos() {
-        let todosList = await TodosService.GetAllTodos();
-        this.setState({ todos: todosList.data });
+        let todosList = [];
+        try {
+            todosList = await TodosService.GetAllTodos();
+            const undoneTodos = todosList.data.filter((todo) => todo.isCompleted === false);
+            const doneTodos = todosList.data.filter((todo) => todo.isCompleted === true);
+            this.setState({ todos: undoneTodos, completedTodos: doneTodos });
+        } catch {
+            todosList = [];
+        }
+
     }
 
     async addTodo() {
         const todoDetails = this.state.todoDetails;
         const isCompleted = this.state.isCompleted;
-        await TodosService.AddTodo({ todoDetails, isCompleted }).then((result) => {
-            console.log(result);
-            this.componentDidMount();
-            this.setState({ todoDetails: '', isCompleted: false });
+        this.setState({ todoDetails: '', isCompleted: false });
+        const result = await TodosService.AddTodo({ todoDetails, isCompleted });
+        if (result) {
+            this.getTodos();
+        }
+    }
+
+    async editTodo(todo) {
+        await TodosService.UpdateTodo(todo);
+        this.getTodos();
+    }
+
+    async deleteTodo(id) {
+        await TodosService.DeleteTodo(id).then((result) => {
+            this.getTodos();
         }, error => {
             console.warn(error);
         });
     }
 
-    editTodo(id) {
-
-    }
-
-    deleteTodo(id) {
-
-    }
-
     logout() {
-        AuthService.Logout();
+        AuthCheck.logout();
     }
 
     todoStatus(status) {
@@ -92,49 +113,100 @@ export class HomePage extends Component {
             <div>
                 <Navbar>
                     <Navbar.Header>
-                        <a className="navbar-brand">TODOs</a>
+                        <span className="navbar-brand">TODOs</span>
                     </Navbar.Header>
                     <Navbar.Body>
                         <Nav>
                             <Nav.Item icon={<Icon icon="home" />} >Home</Nav.Item>
                         </Nav>
                         <Nav pullRight>
-                            <Nav.Item onClick={this.logout} icon={<Icon icon="sign-out" />} >Logout</Nav.Item>
+                            <Nav.Item href="/login" onClick={this.logout} icon={<Icon icon="sign-out" />} >Logout</Nav.Item>
                         </Nav>
                     </Navbar.Body>
                 </Navbar>
 
                 <div className="App-container">
-                    <div className="todo-input-box">
+                    <Form className="todo-input-box" >
+                        <h6>Start Adding Todos</h6>
                         <Input
                             onChange={this.onChangeDetails}
                             componentClass="textarea"
                             rows={3}
                             style={{ width: 300, resize: 'auto' }}
+                            value={this.state.todoDetails}
                             placeholder="add todo details ..."
                         />
-                        <div>
-                            <Toggle size="sm" onChange={this.onChangeCompleted} />
-                            <span style={{ fontSize: 12, fontWeight: "bold" }}>  Completed</span>
-
-                        </div>
-                    </div>
-                    <Button style={{ margin: 10, fontSize: 12 }} onClick={this.addTodo}>
-                        <Icon icon="plus" style={{ fontSize: 12, marginRight: 10 }}></Icon>
+                        <div className="flex-box space-between">
+                            <div>
+                                <Toggle size="sm" onChange={this.onChangeCompleted}
+                                    value={this.state.isCompleted}
+                                />
+                                <span style={{ fontSize: 12, fontWeight: "bold" }}>  Completed</span>
+                            </div>
+                            <Button style={{ margin: 10, fontSize: 12 }} onClick={this.addTodo}>
+                                <Icon icon="plus" style={{ fontSize: 12, marginRight: 10 }}></Icon>
                      Add
                     </Button>
-                    <FlexboxGrid>
-                        {this.state.todos.map((item) => (
-                            <Panel shaded bordered bodyFill style={{ display: 'inline-block', width: 240, margin: 4 }} key={item['_id']}>
-                                <Panel header="TODO">
-                                    <p>
-                                        <small>{item.todoDetails}</small>
-                                    </p>
-                                    {this.todoStatus(item.isCompleted)}
-                                </Panel>
-                            </Panel>
-                        ))}
-                    </FlexboxGrid>
+                        </div>
+                    </Form>
+                    <Row className="flex-box">
+                        <Col md={12} sm={12}>
+                            <h3>Todos</h3>
+                            <FlexboxGrid>
+                                {this.state.todos.map((item) => (
+                                    <Panel shaded bordered bodyFill style={{ display: 'inline-block', width: 240, margin: 4 }} key={item['_id']}>
+                                        <div className="flex-box space-between">
+                                            <IconButton
+                                                icon={<Icon icon="minus-circle" />}
+                                                appearance="subtle"
+                                                size="md"
+                                                onClick={() => this.deleteTodo(item._id)}
+                                            />
+                                            <div style={{ margin: 10, fontSize: 13 }}>
+                                                <span>completed?
+                                                <Toggle size="sm" onChange={() => this.editTodo(item)}
+                                                    /></span>
+                                            </div>
+                                        </div>
+                                        <Panel>
+                                            <p>
+                                                <small>{item.todoDetails}</small>
+                                            </p>
+                                            {this.todoStatus(item.isCompleted)}
+                                        </Panel>
+                                    </Panel>
+                                ))}
+                            </FlexboxGrid>
+                        </Col>
+                        <Col md={12} sm={12}>
+                            <h3>Completed Tasks</h3>
+                            <FlexboxGrid>
+                                {this.state.completedTodos.map((item) => (
+                                    <Panel shaded bordered bodyFill style={{ display: 'inline-block', width: 240, margin: 4 }} key={item['_id']}>
+                                        <div className="flex-box space-between">
+                                            <IconButton
+                                                icon={<Icon icon="minus-circle" />}
+                                                appearance="subtle"
+                                                size="md"
+                                                onClick={() => this.deleteTodo(item._id)}
+                                            />
+                                            <div style={{ margin: 10, fontSize: 13 }}>
+                                                <span>incomplete?
+                                                <Toggle size="sm" onChange={() => this.editTodo(item)}
+                                                    /></span>
+                                            </div>
+                                        </div>
+                                        <Panel>
+                                            <p>
+                                                <small>{item.todoDetails}</small>
+                                            </p>
+                                            {this.todoStatus(item.isCompleted)}
+                                        </Panel>
+                                    </Panel>
+                                ))}
+                            </FlexboxGrid>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );

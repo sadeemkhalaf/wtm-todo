@@ -63,6 +63,7 @@ export class RegisterPage extends Component {
             <div className="App">
                 <header className="App-header">
                     <Form layout="horizontal" onSubmit={this.onSubmit} model={model}>
+                    <h4>Register</h4>
                         <FormGroup>
                             <ControlLabel srOnly>name</ControlLabel>
                             <FormControl type="text" placeholder="name" name="name" value={this.state.name} onChange={this.onChangeName} />

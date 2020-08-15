@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import AuthService from '../../service/auth.service.js';
+import AuthCheck, { authenticationService } from '../../service/authCheck.service';
+
+import { Redirect } from 'react-router-dom';
 // rsuite components
 import { Button, Form, FormGroup, FormControl, ControlLabel, Schema } from 'rsuite';
 // import default style
@@ -17,18 +20,32 @@ const model = Schema.Model({
 });
 
 export class LoginPage extends Component {
+    _isMounted = false;
+    subscriptions;
 
     constructor(props) {
         super(props)
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        AuthCheck.checkLogin();
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            loggedIn: authenticationService.loginStatusValue
         }
     }
+
+    componentDidMount() {
+        this._isMounted = true;
+        this.subscriptions = authenticationService.isLoggedIn.subscribe((value) => this.setState({loggedIn: value}));
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        this.subscriptions.unsubscribe();
+    }
+
 
     // onChange email and password
     onChangeEmail(value) {
@@ -39,21 +56,45 @@ export class LoginPage extends Component {
         this.setState({ password: value })
     }
 
-    onSubmit(e) {
+    onSubmit = (e) => {
         const userObject = {
             email: this.state.email,
             password: this.state.password
         };
 
-        AuthService.Login(userObject);
+        AuthService.Login(userObject).then(() => {
+            this.setState({loggedIn: true});
+            this.redirect();
+        });
         this.setState({ email: '', password: '' })
     }
+
+    redirect() {
+        if (this.state.loggedIn) {
+            return (
+                <Redirect push to="/home" />
+            );
+        }
+    }
+
+    CheckAuth() {
+        if (this.state.loggedIn)
+        {
+            return <Redirect push to={'/Home'} />;
+        }
+      }
+
+    RedirectTo () {
+        return this.state.loggedIn ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
+      }
 
     render() {
         return (
             <div className="App">
+                {this.RedirectTo()}
                 <header className="App-header">
                     <Form layout="horizontal" onSubmit={this.onSubmit} model={model}>
+                        <h4>Login</h4>
                         <FormGroup>
                             <ControlLabel srOnly>email</ControlLabel>
                             <FormControl type="email" placeholder="email" name="email" value={this.state.email} onChange={this.onChangeEmail} />
@@ -65,8 +106,10 @@ export class LoginPage extends Component {
                         </FormGroup>
 
                         <Button type="submit">Login</Button>
+                        
                     </Form>
                 </header>
+                {this.redirect()}
             </div>
         );
     }

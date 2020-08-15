@@ -15,12 +15,12 @@ const GetTodo = (todoID) => {
     return axios.post(API_URL + `todo/${todoID}`,{} ,{ headers: authHeader() });
 };
 
-const UpdateTodo = (todoID) => {
-    return axios.get(API_URL + `todo/${todoID}`, { headers: authHeader() });
+const UpdateTodo = (todo) => {
+    return axios.patch(API_URL + `todo/${todo._id}`, {isCompleted: !todo.isCompleted} ,{ headers: authHeader() });
 };
 
 const DeleteTodo = (todoID) => {
-    return axios.get(API_URL + `todo/${todoID}`, { headers: authHeader() });
+    return axios.delete(API_URL + `todo/${todoID}`, { headers: authHeader() });
 };
 
 
