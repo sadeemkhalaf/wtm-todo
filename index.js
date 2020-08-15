@@ -13,6 +13,7 @@ import jwtFunction from './config/passport.config.js';
 // Init an Express App.
 const app = new Express();
 dotenv.config();
+const port = process.env.PORT || 5000;
 
 // Use your dependencies here
 app.use(cors());
@@ -58,3 +59,10 @@ app.use( (err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
+
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+  app.use(express.static('client/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/client/build/index.html'));
+  });
+}
