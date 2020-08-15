@@ -30,12 +30,12 @@ app.use('/', todoController);
 
 
 // Start Server here
-app.listen(8080, () => {
+app.listen(port, () => {
   console.log('Server is running on port 8080!');
 });
 
 
- mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true}, (error) => {
+ mongoose.connect(process.env.DATABASE_URL || 'mongodb+srv://SA:FYVP7VGy182cUJIO@cluster0-vud2m.mongodb.net/wtmTodoDB?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true}, (error) => {
     if(error) {
       console.log('error');
       throw error;
@@ -61,7 +61,7 @@ app.use( (err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-  app.use(express.static('client/build'));
+  app.use(Express.static('client/build'));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/build/index.html'));
   });
