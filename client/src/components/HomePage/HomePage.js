@@ -109,7 +109,7 @@ export class HomePage extends Component {
     }
 
     RedirectTo () {
-        return this.state.loggedIn ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
+        return this.state.loggedIn ? <Redirect push to={'/home'}/> : <Redirect push to={'/'}/>
       }
 
     render() {
@@ -125,7 +125,7 @@ export class HomePage extends Component {
                             <Nav.Item icon={<Icon icon="home" />} >Home</Nav.Item>
                         </Nav>
                         <Nav pullRight>
-                            <Nav.Item href="/login" onClick={this.logout} icon={<Icon icon="sign-out" />} >Logout</Nav.Item>
+                            <Nav.Item href="/" onClick={this.logout} icon={<Icon icon="sign-out" />} >Logout</Nav.Item>
                         </Nav>
                     </Navbar.Body>
                 </Navbar>
