@@ -11,6 +11,10 @@ const userController = express.Router();
  * login user
  */
 
+userController.get('/auth', passport.authenticate(`jwt`, {session: false}), (req, res) => {
+  res.status(200).send(req.headers.authorization);
+});
+
 userController.post('/login', (req, res) => {
   User.findOne({ email: req.body.email }, (error, user) => {
     if (error) {
