@@ -3,16 +3,14 @@ import Todo from '../database/models/todo.model.js';
 import passport from 'passport';
 import jsonwebtoken from 'jsonwebtoken';
 
-
 const todoController = express.Router();
-
 
 /**
  * GET/
  * retrieve and display all Todo's in the Todo Model
  */
 
-todoController.get('/' , passport.authenticate('jwt', {session: false}),(req, res) => {
+todoController.get('/all' , passport.authenticate('jwt', {session: false}),(req, res) => {
   const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
   Todo.find({userId: decoded._id}, (error, result) => {
     if (error) {
