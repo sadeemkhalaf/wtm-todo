@@ -6,8 +6,8 @@ import Express from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import bodyParser from 'body-parser';
-import todoController from './controller/todo.controller.js';
-import userController from './controller/user.controller.js';
+import todoController from './routes/todo.controller.js';
+import userController from './routes/user.controller.js';
 import jwtFunction from './config/passport.config.js';
 
 // Init an Express App.
