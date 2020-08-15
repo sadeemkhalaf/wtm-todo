@@ -9,12 +9,20 @@ import todoController from './routes/todo.controller.js';
 import userController from './routes/user.controller.js';
 import jwtFunction from './config/passport.config.js';
 import path from 'path';
+import cors from 'cors';
 
 // Init an Express App.
 const app = new Express();
 
+app.use(function (req, res, next) { 
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X - Requested - With, Content - Type, Accept');
+  next(); });
+  app.options('*', cors());
+
 dotenv.config();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5000;
 
 // Use your dependencies here
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,11 +31,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 jwtFunction(passport);
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.ORIGIN || "*");
-  next();
-});
 
 // use all controllers(APIs) here
 app.use('/', userController);
@@ -50,7 +53,7 @@ app.use(Express.static('./client/build'));
 app.get('*', (req, res) => {
   const moduleURL = new URL(import.meta.url);
   const __dirname = path.dirname(moduleURL.pathname);
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
 const moduleURL = new URL(import.meta.url);
