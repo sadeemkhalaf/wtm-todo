@@ -31,7 +31,7 @@ const localStrategy = new LocalStrategy({
 const jwtFunction = (passport) => {
     let opts = {};
     opts.jwtFromRequest = Extractjwt.fromAuthHeaderWithScheme("jwt");
-    opts.secretOrKey = 'process.env.SECRET';
+    opts.secretOrKey = process.env.SECRET;
     passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
       User.findOne({_id: jwt_payload._id}, (err, user) => {
             if (err) {
