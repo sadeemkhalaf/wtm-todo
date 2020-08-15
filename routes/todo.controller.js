@@ -12,7 +12,7 @@ const todoController = express.Router();
  * retrieve and display all Todo's in the Todo Model
  */
 
-todoController.get('/all' , passport.authenticate('jwt', {session: false}),(req, res) => {
+todoController.get('/' , passport.authenticate('jwt', {session: false}),(req, res) => {
   const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
   Todo.find({userId: decoded._id}, (error, result) => {
     if (error) {
