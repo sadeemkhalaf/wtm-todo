@@ -14,11 +14,11 @@ import cors from 'cors';
 // Init an Express App.
 const app = new Express();
 
-app.use(function (req, res, next) { 
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next(); });
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
   app.options('*', cors());
 
 dotenv.config();
@@ -55,8 +55,3 @@ app.get('*', (req, res) => {
   const __dirname = path.dirname(moduleURL.pathname);
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
-
-const moduleURL = new URL(import.meta.url);
-const __dirname = path.dirname(moduleURL.pathname);
-
-console.log(__dirname);
