@@ -3,7 +3,7 @@ import TodosService from '../../service/todo.service';
 import AuthCheck, { authenticationService } from '../../service/authCheck.service';
 import {Redirect} from 'react-router-dom';
 // rsuite components
-import { Row, Col, Tag, Input, Form, IconButton, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
+import { Alert, Row, Col, Tag, Input, Form, IconButton, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css';
 import './HomePage.css';
@@ -69,22 +69,31 @@ export class HomePage extends Component {
         const todoDetails = this.state.todoDetails;
         const isCompleted = this.state.isCompleted;
         this.setState({ todoDetails: '', isCompleted: false });
-        const result = await TodosService.AddTodo({ todoDetails, isCompleted });
+        const result = await TodosService.AddTodo({ todoDetails, isCompleted }).then(() => {
+            Alert.success(`a new task is added!`, 3000);
+        }, error => {
+            Alert.error(`task failed to be added!`, 3000);
+        });
         if (result) {
             this.getTodos();
         }
     }
 
     async editTodo(todo) {
-        await TodosService.UpdateTodo(todo);
+        await TodosService.UpdateTodo(todo).then(() => {
+            Alert.success(`your task is updated!`, 3000);
+        }, error => {
+            Alert.error(`your task failed to update!`, 3000);
+        });
         this.getTodos();
     }
 
     async deleteTodo(id) {
         await TodosService.DeleteTodo(id).then((result) => {
+            Alert.success(`task deleted, way to go!`, 3000);
             this.getTodos();
         }, error => {
-            console.warn(error);
+            Alert.error(`task failed to be deleted!`, 3000);
         });
     }
 

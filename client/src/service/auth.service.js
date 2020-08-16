@@ -7,8 +7,7 @@ const Register = ({ name, email, password }) => {
   return axios.post(API_URL + "signup", {
     name,
     email,
-    password,
-  }, { headers: { 'Content-Type': 'application/json' } });
+    password});
 };
 
 const Login = ({ email, password }) => {
@@ -16,7 +15,7 @@ const Login = ({ email, password }) => {
     .post(API_URL + "login", {
       email,
       password
-    }, { headers: { 'Content-Type': 'application/json' } })
+    })
     .then((response) => {
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));

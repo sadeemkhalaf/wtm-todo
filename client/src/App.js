@@ -31,8 +31,8 @@ function App() {
       <Router>
         {RedirectTo()}
         <Switch>
-          <Route path="/" component={Login}></Route>
-          <Route path="/register" component={Register}></Route>
+          <Route path="/login" component={Login}></Route>
+          <Route path="/account/register" component={Register}></Route>
           <Route path="/home" component={Home}></Route>
         </Switch>
       </Router>

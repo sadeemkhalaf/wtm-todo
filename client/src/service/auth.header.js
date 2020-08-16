@@ -3,8 +3,7 @@ const authHeader = () => {
 
   if (user && user.token) {
     return {
-      Authorization: user.token, 'Content-Type': 'application/json;charset=UTF-8',
-      "Access-Control-Allow-Origin": "*"
+      Authorization: user.token
     };
   } else {
     return {};

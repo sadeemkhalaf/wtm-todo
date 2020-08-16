@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AuthService from '../../service/auth.service.js';
 // rsuite components
-import { Button, Form, FormGroup, FormControl, ControlLabel, Schema, Divider } from 'rsuite';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Schema, Divider, Alert } from 'rsuite';
 // import default style
 import 'rsuite/dist/styles/rsuite-default.css'
 import './RegisterPage.css';
@@ -54,7 +54,11 @@ export class RegisterPage extends Component {
             password: this.state.password
         };
 
-        AuthService.Register(userObject);
+        AuthService.Register(userObject).then(() => {
+            Alert.success('Account created successfully!', 3000)
+        }, error => {
+            Alert.warning(`Account already exists with email ${userObject.email}`, 3000)
+        });
         this.setState({ name: '', email: '', password: '' })
     }
 

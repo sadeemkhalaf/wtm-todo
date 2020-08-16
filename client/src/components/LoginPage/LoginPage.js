@@ -101,7 +101,7 @@ export class LoginPage extends Component {
                         <div>
                         <Button type="submit">Login</Button>
                             <Divider vertical />
-                            <a href="/register">Register</a>
+                            <a href="/account/register">Register</a>
                         </div>        
                     </Form>
                 </header>
