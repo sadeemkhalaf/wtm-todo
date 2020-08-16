@@ -22,7 +22,7 @@ const Home = () => (
 );
 
 const RedirectTo = () => {
-  return authenticationService.loginStatusValue ? <Redirect push from={'/login'} to={'/home'}/> : null
+  return authenticationService.loginStatusValue ? <Redirect push from={'/login'} to={'/home'} /> : null
 }
 
 function App() {
@@ -31,9 +31,10 @@ function App() {
       <Router>
         {RedirectTo()}
         <Switch>
+          <Route path="/home" component={Home}></Route>
           <Route path="/login" component={Login}></Route>
           <Route path="/account/register" component={Register}></Route>
-          <Route path="/home" component={Home}></Route>
+          <Route path="/" component={Home}></Route>
         </Switch>
       </Router>
     </div>
