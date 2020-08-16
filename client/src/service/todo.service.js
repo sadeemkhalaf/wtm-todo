@@ -5,7 +5,7 @@ import authHeader from './auth.header.js';
 const API_URL = "https://todo-app-wtm.herokuapp.com/";
 
 const GetAllTodos = () => {
-    return axios.get(API_URL, { headers: authHeader() });
+    return axios.get(`${API_URL}all`, { headers: authHeader() });
 };
 
 const AddTodo = (todoObject) => {
