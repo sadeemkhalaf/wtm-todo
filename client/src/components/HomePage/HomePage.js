@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TodosService from '../../service/todo.service';
 import AuthCheck, { authenticationService } from '../../service/authCheck.service';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 // rsuite components
 import { Alert, Row, Col, Tag, Input, Form, IconButton, FlexboxGrid, Icon, Button, Toggle, Navbar, Nav, Panel } from 'rsuite';
 // import default style
@@ -47,22 +47,16 @@ export class HomePage extends Component {
     onChangeDetails(value) {
         this.setState({ todoDetails: value })
     }
-    
+
     onChangeCompleted(value) {
         this.setState({ isCompleted: value })
     }
 
     async getTodos() {
-        let todosList = [];
-        try {
-            todosList = await TodosService.GetAllTodos();
-            const undoneTodos = todosList.data.filter((todo) => todo.isCompleted === false);
-            const doneTodos = todosList.data.filter((todo) => todo.isCompleted === true);
-            this.setState({ todos: undoneTodos, completedTodos: doneTodos });
-        } catch {
-            todosList = [];
-        }
-
+        todosList = await TodosService.GetAllTodos();
+        const undoneTodos = todosList.data.filter((todo) => todo.isCompleted === false);
+        const doneTodos = todosList.data.filter((todo) => todo.isCompleted === true);
+        this.setState({ todos: undoneTodos, completedTodos: doneTodos });
     }
 
     async addTodo() {
@@ -71,21 +65,19 @@ export class HomePage extends Component {
         this.setState({ todoDetails: '', isCompleted: false });
         const result = await TodosService.AddTodo({ todoDetails, isCompleted }).then(() => {
             Alert.success(`a new task is added!`, 3000);
+            this.getTodos();
         }, error => {
             Alert.error(`task failed to be added!`, 3000);
         });
-        if (result) {
-            this.getTodos();
-        }
     }
 
     async editTodo(todo) {
         await TodosService.UpdateTodo(todo).then(() => {
             Alert.success(`your task is updated!`, 3000);
+            this.getTodos();
         }, error => {
             Alert.error(`your task failed to update!`, 3000);
-        });
-        this.getTodos();
+        })
     }
 
     async deleteTodo(id) {
@@ -117,9 +109,9 @@ export class HomePage extends Component {
         );
     }
 
-    RedirectTo () {
-        return this.state.loggedIn ? <Redirect push to={'/home'}/> : <Redirect push to={'/login'}/>
-      }
+    RedirectTo() {
+        return this.state.loggedIn ? <Redirect push to={'/home'} /> : <Redirect push to={'/login'} />
+    }
 
     render() {
         return (

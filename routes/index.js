@@ -8,7 +8,6 @@ const app = new Express();
 const router = app.Router(); 
 
 router.use((req, res) => {
-    console.log('anything :\')');
 	res.sendFile(path.join(__dirname, './client/build/index.html'));
 });
 

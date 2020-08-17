@@ -10,7 +10,7 @@ const todoController = express.Router();
  * retrieve and display all Todo's in the Todo Model
  */
 
-todoController.get('/all' , passport.authenticate('jwt', {session: false}),(req, res) => {
+todoController.get('/api/all' , passport.authenticate('jwt', {session: false}),(req, res) => {
   const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
   Todo.find({userId: decoded._id}, (error, result) => {
     if (error) {
@@ -25,7 +25,7 @@ todoController.get('/all' , passport.authenticate('jwt', {session: false}),(req,
  * POST
  * Add a new Todo item to your database
  */
-todoController.post('/add-todo', passport.authenticate(`jwt`, {session: false}), (req, res) => {
+todoController.post('/api/add-todo', passport.authenticate(`jwt`, {session: false}), (req, res) => {
   const { todoDetails, isCompleted, createdOn } = req.body;
   const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
   const userId = decoded._id;
@@ -46,7 +46,7 @@ todoController.post('/add-todo', passport.authenticate(`jwt`, {session: false}),
     });
 });
 
-todoController.patch(`/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
+todoController.patch(`/api/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
     try {
       const decoded = jsonwebtoken.decode(req.headers.authorization.split(' ')[1]);
       const userId = decoded._id;
@@ -64,7 +64,7 @@ todoController.patch(`/todo/:id`, passport.authenticate(`jwt`, {session: false})
 })
 
 // get a todo item by its id
-todoController.get('/todo/:id', passport.authenticate('jwt', {session: false}),(req, res) => {
+todoController.get('/api/todo/:id', passport.authenticate('jwt', {session: false}),(req, res) => {
   Todo.findById(req.params.id, (error, result) => {
     if(error) {
       res.status(400).send(error);
@@ -79,7 +79,7 @@ todoController.get('/todo/:id', passport.authenticate('jwt', {session: false}),(
   })
 });
 
-todoController.delete(`/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
+todoController.delete(`/api/todo/:id`, passport.authenticate(`jwt`, {session: false}), (req, res) => {
   try {
   Todo.remove({_id: req.params.id}).then(() => {
     res.status(200).send(`deleted successfully`);

@@ -11,11 +11,11 @@ const userController = express.Router();
  * login user
  */
 
-userController.get('/auth', passport.authenticate(`jwt`, {session: false}), (req, res) => {
+userController.get('/api/auth', passport.authenticate(`jwt`, {session: false}), (req, res) => {
   res.status(200).send(req.headers.authorization);
 });
 
-userController.post('/login', (req, res) => {
+userController.post('/api/login', (req, res) => {
   User.findOne({ email: req.body.email }, (error, user) => {
     if (error) {
       res.status(400).send({ success: false, msg: error });
@@ -38,7 +38,7 @@ userController.post('/login', (req, res) => {
  * POST
  * Add a new User to your database
  */
-userController.post('/signup', async (req, res) => {
+userController.post('/api/signup', async (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.json({ success: false, msg: 'Please pass email and password' })
   } else {
@@ -66,19 +66,9 @@ userController.post('/signup', async (req, res) => {
   }
 });
 
-userController.get(`/signout`, passport.authenticate(`jwt`, { session: false }), (req, res) => {
+userController.get(`/api/signout`, passport.authenticate(`jwt`, { session: false }), (req, res) => {
   req.logOut();
   res.json({ success: true, msg: `logged out successfully` });
-})
-
-// just for testing 
-userController.get(`/users`, (req, res) => {
-  User.find({}, (error, users) => {
-    if (error) {
-      res.status(400).send(error);
-    }
-    res.status(200).json(users);
-  })
 })
 
 const comparePassword = (password, userPassword, cb) => {

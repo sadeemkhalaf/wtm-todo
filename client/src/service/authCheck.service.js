@@ -18,11 +18,9 @@ class AuthCheck {
         const token = await localStorage.getItem('user');
         if (token) {
             UserService.Auth().then((data) => {
-                console.log(true);
                 $isLoggedIn.next(true);
             }, error => {
                 $isLoggedIn.next(false);
-                console.log(false);
             })
         } else {
             $isLoggedIn.next(false);
