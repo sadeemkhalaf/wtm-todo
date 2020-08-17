@@ -53,10 +53,16 @@ export class HomePage extends Component {
     }
 
     async getTodos() {
-        const todosList = await TodosService.GetAllTodos();
-        const undoneTodos = todosList.data.filter((todo) => todo.isCompleted === false);
-        const doneTodos = todosList.data.filter((todo) => todo.isCompleted === true);
-        this.setState({ todos: undoneTodos, completedTodos: doneTodos });
+        let todosList = [];
+        try {
+            todosList = await TodosService.GetAllTodos();
+            const undoneTodos = todosList.data.filter((todo) => todo.isCompleted === false);
+            const doneTodos = todosList.data.filter((todo) => todo.isCompleted === true);
+            this.setState({ todos: undoneTodos, completedTodos: doneTodos });
+        } catch {
+            todosList = [];
+        }
+
     }
 
     async addTodo() {
