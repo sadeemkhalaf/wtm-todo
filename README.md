@@ -1,5 +1,9 @@
 # wtm-todo
 
+
+deployed to: 
+https://wtm-todo.herokuapp.com/home
+
 Web Application: Todo List
 Deadline: 15 Days
 
