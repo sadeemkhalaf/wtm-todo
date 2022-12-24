@@ -34,7 +34,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.8",
     "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "dotenv": "^8.6.0"
   },
