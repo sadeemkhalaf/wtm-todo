@@ -31,10 +31,10 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "express-validator": "^6.10.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.12.8",
     "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "dotenv": "^8.6.0"
   },
